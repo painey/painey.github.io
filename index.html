@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MLB Stadium Visited Map</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    #map {
+      position: relative;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/8/83/Blank_US_Map.svg') no-repeat center;
+      background-size: contain;
+      width: 100%;
+      max-width: 1000px;
+      height: 600px;
+      margin: 20px auto;
+      border: 1px solid #ccc;
+    }
+    .stadium {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+    }
+    #visited-list {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>MLB Stadium Tracker</h1>
+  <div id="map">
+    <img src="icons/diamondbacks_grey.png" data-team="Chase Field" data-id="diamondbacks" class="stadium" style="top: 380px; left: 140px;" />
+<img src="icons/braves_grey.png" data-team="Truist Park" data-id="braves" class="stadium" style="top: 440px; left: 780px;" />
+<img src="icons/orioles_grey.png" data-team="Oriole Park" data-id="orioles" class="stadium" style="top: 280px; left: 880px;" />
+<img src="icons/redsox_grey.png" data-team="Fenway Park" data-id="redsox" class="stadium" style="top: 180px; left: 930px;" />
+<img src="icons/cubs_grey.png" data-team="Wrigley Field" data-id="cubs" class="stadium" style="top: 240px; left: 580px;" />
+<img src="icons/whitesox_grey.png" data-team="Guaranteed Rate Field" data-id="whitesox" class="stadium" style="top: 250px; left: 580px;" />
+<img src="icons/reds_grey.png" data-team="Great American Ball Park" data-id="reds" class="stadium" style="top: 290px; left: 700px;" />
+<img src="icons/guardians_grey.png" data-team="Progressive Field" data-id="guardians" class="stadium" style="top: 260px; left: 720px;" />
+<img src="icons/rockies_grey.png" data-team="Coors Field" data-id="rockies" class="stadium" style="top: 260px; left: 340px;" />
+<img src="icons/tigers_grey.png" data-team="Comerica Park" data-id="tigers" class="stadium" style="top: 220px; left: 700px;" />
+<img src="icons/astros_grey.png" data-team="Minute Maid Park" data-id="astros" class="stadium" style="top: 500px; left: 520px;" />
+<img src="icons/royals_grey.png" data-team="Kauffman Stadium" data-id="royals" class="stadium" style="top: 300px; left: 540px;" />
+<img src="icons/angels_grey.png" data-team="Angel Stadium" data-id="angels" class="stadium" style="top: 460px; left: 60px;" />
+<img src="icons/dodgers_grey.png" data-team="Dodger Stadium" data-id="dodgers" class="stadium" style="top: 430px; left: 50px;" />
+<img src="icons/marlins_grey.png" data-team="loanDepot park" data-id="marlins" class="stadium" style="top: 580px; left: 880px;" />
+<img src="icons/brewers_grey.png" data-team="American Family Field" data-id="brewers" class="stadium" style="top: 210px; left: 600px;" />
+<img src="icons/twins_grey.png" data-team="Target Field" data-id="twins" class="stadium" style="top: 170px; left: 500px;" />
+<img src="icons/mets_grey.png" data-team="Citi Field" data-id="mets" class="stadium" style="top: 200px; left: 910px;" />
+<img src="icons/yankees_grey.png" data-team="Yankee Stadium" data-id="yankees" class="stadium" style="top: 190px; left: 900px;" />
+<img src="icons/athletics_grey.png" data-team="Oakland Coliseum" data-id="athletics" class="stadium" style="top: 300px; left: 10px;" />
+<img src="icons/phillies_grey.png" data-team="Citizens Bank Park" data-id="phillies" class="stadium" style="top: 240px; left: 880px;" />
+<img src="icons/pirates_grey.png" data-team="PNC Park" data-id="pirates" class="stadium" style="top: 250px; left: 740px;" />
+<img src="icons/padres_grey.png" data-team="Petco Park" data-id="padres" class="stadium" style="top: 490px; left: 50px;" />
+<img src="icons/giants_grey.png" data-team="Oracle Park" data-id="giants" class="stadium" style="top: 280px; left: 10px;" />
+<img src="icons/mariners_grey.png" data-team="T-Mobile Park" data-id="mariners" class="stadium" style="top: 80px; left: 80px;" />
+<img src="icons/cardinals_grey.png" data-team="Busch Stadium" data-id="cardinals" class="stadium" style="top: 280px; left: 600px;" />
+<img src="icons/rays_grey.png" data-team="Tropicana Field" data-id="rays" class="stadium" style="top: 540px; left: 880px;" />
+<img src="icons/rangers_grey.png" data-team="Globe Life Field" data-id="rangers" class="stadium" style="top: 480px; left: 500px;" />
+<img src="icons/bluejays_grey.png" data-team="Rogers Centre" data-id="bluejays" class="stadium" style="top: 170px; left: 730px;" />
+<img src="icons/nationals_grey.png" data-team="Nationals Park" data-id="nationals" class="stadium" style="top: 270px; left: 880px;" />
+  </div>
+
+  <h2>Visited Stadiums</h2>
+  <ul id="visited-list"></ul>
+
+  <script>
+    const stadiums = document.querySelectorAll('.stadium');
+    const visitedList = document.getElementById('visited-list');
+    let visited = JSON.parse(localStorage.getItem('visitedStadiums')) || [];
+
+    function updateVisitedList() {
+      visitedList.innerHTML = '';
+      visited.forEach(id => {
+        const name = document.querySelector(`img[data-id="${id}"]`).dataset.team;
+        const li = document.createElement('li');
+        li.textContent = name;
+        visitedList.appendChild(li);
+      });
+    }
+
+    function markVisited(id) {
+      const img = document.querySelector(`img[data-id="${id}"]`);
+      img.src = `icons/${id}_color.png`;
+    }
+
+    stadiums.forEach(icon => {
+      const id = icon.dataset.id;
+      if (visited.includes(id)) markVisited(id);
+
+      icon.addEventListener('click', () => {
+        if (!visited.includes(id)) {
+          visited.push(id);
+          markVisited(id);
+          localStorage.setItem('visitedStadiums', JSON.stringify(visited));
+          updateVisitedList();
+        }
+      });
+    });
+
+    updateVisitedList();
+  </script>
+</body>
+</html>
